@@ -29,8 +29,8 @@ namespace CollegeManager
             services.AddControllersWithViews();
             services.AddScoped<DataContext>(_ =>
                new DataContext(Configuration.GetConnectionString("DefaultConn")));
-
-            services.AddControllers().AddNewtonsoftJson().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddControllers().AddNewtonsoftJson();
+            //services.AddControllers().AddNewtonsoftJson().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
         }
 

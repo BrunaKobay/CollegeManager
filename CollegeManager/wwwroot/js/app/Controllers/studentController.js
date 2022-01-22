@@ -95,7 +95,7 @@ app.controller('studentController', function ($scope, baseService) {
         };
     };
 
-    $scope.deleteStudent = function () {
+    $scope.delete= function () {
         baseService.Delete($scope.objModel.Id).then(function (results) {
             if (results.data.error_message) {
                 $scope.msgError = results.data.error_message;

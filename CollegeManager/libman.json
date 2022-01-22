@@ -3,12 +3,12 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
+      "library": "bootstrap@5.1.3",
+      "destination": "wwwroot/lib/bootstrap/"
+    },
+    {
       "library": "angular.js@1.8.2",
-      "destination": "wwwroot/lib/angular.js/",
-      "files": [
-        "angular.min.js",
-        "angular.js"
-      ]
+      "destination": "wwwroot/lib/angular.js/"
     }
   ]
 }

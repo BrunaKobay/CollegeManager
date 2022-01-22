@@ -1,52 +1,53 @@
 ﻿using CollegeManager.Data;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
-using System.Data.Entity;
-using System.Text.Json;
-using System.Linq;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 using CollegeManager.Models;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CollegeManager.Controllers
 {
-    public class StudentController : Controller
+    public class SubjectController : Controller
     {
         private readonly DataContext _context;
-        //private readonly DataContext _context = new DataContext("DefaultConn");
 
-        public StudentController(DataContext context)
+        public SubjectController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: Students
-        [HttpGet]
+        // GET: Subjects
         public ContentResult Get()
         {
             try
             {
-                return Content(JsonConvert.SerializeObject(_context.Students.ToList(), new JsonSerializerSettings()
+                var subjects = _context.Subjects.ToList();
+
+                return Content(JsonConvert.SerializeObject(subjects, new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
+
             }
             catch (Exception ex)
             {
-
+                Response.StatusCode = 500;
                 return Content(JsonConvert.SerializeObject(ex));
             }
         }
 
-        // GET: Student/Create
+
+        // GET: Subjects/Create
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public JsonResult Create([FromBody]Student students)
+        public JsonResult Create(Subject subjects)
         {
             try
             {
-                _context.Students.Add(students);
+                _context.Subjects.Add(subjects);
                 _context.SaveChanges();
                 return Json(new { Status = "Ok" });
             }
@@ -58,19 +59,20 @@ namespace CollegeManager.Controllers
 
         }
 
-        // POST: Student/Edit/Id
+
+
+        // POST: Subject/Edit/Id
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public JsonResult Edit(Student student)
+        public JsonResult Edit(Subject subject)
         {
 
             try
             {
-                var confirm = _context.Students.AsNoTracking().Where(s => s.Id == student.Id).SingleOrDefault();
+                var confirm = _context.Subjects.AsNoTracking().Where(s => s.Id == subject.Id).SingleOrDefault();
                 if (confirm == null) { return Json(new { success = false }); }
 
-
-                _context.Entry(student).State = EntityState.Modified;
+                _context.Entry(subject).State = EntityState.Modified;
                 _context.SaveChanges();
                 return Json(new { success = true });
 
@@ -84,16 +86,16 @@ namespace CollegeManager.Controllers
         }
 
 
-        // GET: Student/Delete/5
+        // GET: Subject/Delete/5
         [HttpPost]
         public JsonResult Delete(int? id)
         {
             try
             {
-                var student = _context.Students.Find(id);
-                if (student == null) { return Json(new { success = false }); }
+                var subject = _context.Subjects.Find(id);
+                if (subject == null) { return Json(new { success = false }); }
 
-                _context.Students.Remove(student);
+                _context.Subjects.Remove(subject);
                 _context.SaveChanges();
                 return Json(new { success = true });
 

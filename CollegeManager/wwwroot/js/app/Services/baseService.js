@@ -14,7 +14,7 @@ angular.module('app').service('baseService', ['$http', function ($http) {
     };
 
     var _save = function (c) {
-        return $http.post('/' + strAlias + '/create', c, { headers: { 'Content-Type': 'application/json' } }).then(function (results) {
+        return $http.post('/' + strAlias + '/create', c).then(function (results) {
             return results;
         }, function (err) {
             return err;
