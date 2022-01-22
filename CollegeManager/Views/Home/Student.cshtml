@@ -1,0 +1,128 @@
+﻿<div class="container" ng-controller="studentController">
+    <h2 class="mt-5">
+        Students
+        <button type="button" class="btn btn-warning float-end" aria-label="Add student" data-bs-toggle="modal" data-bs-target="#AddStudent">
+            <i class="fas fa-plus"></i>
+        </button>
+    </h2>
+
+    <div class="alert alert-danger" ng-show="msgError.length > 0">
+        {{msgError}}
+    </div>
+    {{objData}}
+ 
+    <div class="panel panel-default mt-4 table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Birthday</th>
+                    <th>Registration Number</th>
+                    <th class="actionColumn">Enrollments</th>
+                    <th class="actionColumn"></th>
+                </tr>
+            </thead>
+            <tr ng-repeat="o in objData">
+                <td data-title="Title">{{ o.Name}}</td>
+                <td data-title="Birthday">{{o.Birthday | date:'dd/MM/yyyy'}}</td>
+                <td data-title="RegistrationId">{{ o.RegistrationId }}</td>
+                <td>
+                    <button class="btn btn-primary btn-xs" ng-click="ShowGrades(o.StudentId)">Show Grades</button>
+                </td>
+                <td>
+                    <button data-bs-toggle="modal" data-bs-target="#EditStudent" class="btn btn-outline-success" ng-click="editId(o)"> <span><i class="fas fa-edit"></i></span></button>
+                    <button data-bs-toggle="modal" data-bs-target="#DeleteStudent" class="btn btn-outline-danger" ng-click="deleteId(o)"><span><i class="far fa-trash-alt"></i></span></button>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+
+    <!-- modal for adding new student -->
+    <div class="modal" id="AddStudent" role="dialog" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-light text-center">
+                    <h3 class="modal-title w-100">Add Student</h3>
+                </div>
+                <div class="modal-body text-start">
+                    <form name="newForm" novalidate>
+                        <input type="hidden" data-ng-model="Id" />
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input class="form-control" type="text" name="Name" id="name" ng-model="objModel.Name" placeholder="student name" required />
+                            <span ng-show="newForm.Name.$invalid && newForm.Name.$touched" style="color:red" class="help-block">Name is required.</span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="birthday" class="form-label">Birthday</label>
+                            <input class="form-control" type="date" id="birthday" ng-model="objModel.Birthday" placeholder="dd/mm/yyyy" required />
+                            <span ng-show="newForm.Birthday.$invalid && newForm.Birthday.$touched" style="color:red" class="help-block">Please enter a valid date.</span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="registrationId" class="form-label">Registration Number</label>
+                            <input class="form-control" type="text" id="registrationId" ng-model="objModel.RegistrationId" placeholder="student registration number" required />
+                            <p ng-show="newForm.RegistrationId.$invalid && newForm.RegistrationId.$touched" style="color:red" class="help-block">Registration number is required.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="newForm.$invalid" ng-click="Save()">Add</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal for editing student -->
+    <div class="modal" id="EditStudent" role="dialog" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-light text-center">
+                    <h3 class="modal-title w-100">Edit Student</h3>
+                </div>
+                <div class="modal-body text-start">
+                    <form name="editForm" novalidate>
+                        <input type="hidden" ng-model="objModel.Id" />
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input class="form-control" type="text" name="Name" id="name" ng-model="objModel.Name" placeholder="student name" required />
+                            <span ng-show="editForm.Name.$dirty && editForm.Name.$error.required" style="color:red" class="help-block">Name is required.</span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="birthday" class="form-label">Birthday</label>
+                            <input class="form-control" type="text" id="birthday" ng-model="objModel.Birthday | date:'dd/MM/yyyy' " placeholder="dd/mm/yyyy" required />
+                            <span ng-show="editForm.Birthday.$error.required && editForm.Birthday.$dirty" style="color:red" class="help-block">Please enter a valid date.</span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="registrationId" class="form-label">Registration Number</label>
+                            <input class="form-control" type="text" id="registrationId" ng-model="objModel.RegistrationId" placeholder="student registration number" required />
+                            <span ng-show=" editForm.RegistrationId.$touched && editForm.RegistrationId.$error.required" style="color:red" class="help-block">Registration number is required.</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="editForm.$invalid" ng-click="edit()">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal for deleting student -->
+    <div class="modal" role="dialog" id="DeleteStudent" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h3 class="modal-title w-100">Are you sure you want to delete "{{objModel.Name}}"?</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnAdd" data-bs-dismiss="modal" ng-click="delete(objModel.Id)">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
