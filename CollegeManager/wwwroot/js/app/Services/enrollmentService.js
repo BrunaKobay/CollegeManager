@@ -8,4 +8,11 @@ angular.module('app').service('enrollmentService', function ($http) {
 
     }
 
+
+    //Service to get all enrollments with studentID
+    this.getEnrollmentByStudentId = function (id) {
+        return $http.post('enrollment/GetByStudentId/' + id);
+
+    }
+
 });

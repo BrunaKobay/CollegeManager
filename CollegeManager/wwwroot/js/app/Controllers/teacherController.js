@@ -8,15 +8,18 @@ app.controller('teacherController', function ($scope, baseService) {
     $scope.objModel = {};
 
     $scope.coursesList = [];
+    $scope.teacherDetail = [];
     $scope.enrollmentsList = [];
+
+    $scope.selectedTeacher = false;
 
 
     baseService.SetAlias('teacher');
 
     $scope.GetCourseList = function () {
         baseService.GetByModel('course').then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.coursesList = results.data;
             }
@@ -29,8 +32,8 @@ app.controller('teacherController', function ($scope, baseService) {
 
     $scope.GetList = function () {
         baseService.GetList().then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.objData = results.data;
             }
@@ -66,8 +69,8 @@ app.controller('teacherController', function ($scope, baseService) {
         };
 
         baseService.Save(objForm).then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.GetList();
                 $scope.setDefaultModel();
@@ -98,8 +101,8 @@ app.controller('teacherController', function ($scope, baseService) {
         };
 
         baseService.Edit(objForm).then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.GetList();
                 $scope.setDefaultModel();
@@ -118,8 +121,8 @@ app.controller('teacherController', function ($scope, baseService) {
 
     $scope.delete = function () {
         baseService.Delete($scope.objModel.Id).then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.GetList();
                 $scope.setDefaultModel();
@@ -127,6 +130,27 @@ app.controller('teacherController', function ($scope, baseService) {
         }, function (error) {
             $scope.msgError = error;
         });
+    };
+
+    
+    $scope.ShowSubjects = function (model) {
+        $scope.selectedTeacher = true;
+        $scope.Name = model.Name;
+        baseService.GetById(model.Id).then(function (results) {
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
+            } else {
+                $scope.teacherDetail = results.data;
+            }
+        }, function (error) {
+            $scope.msgError = error;
+        });
+
+    }
+
+    $scope.Close = function () {
+        $scope.selectedTeacher = false;
+        setDefaultModel();
     };
 
 });

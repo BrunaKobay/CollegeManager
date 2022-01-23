@@ -23,19 +23,19 @@ namespace CollegeManager.Controllers
 
         // GET: Students
         [HttpGet]
-        public ContentResult Get()
+        public JsonResult Get()
         {
             try
             {
-                return Content(JsonConvert.SerializeObject(_context.Students.ToList(), new JsonSerializerSettings()
+                return Json(_context.Students.ToList(), new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                }));
+                });
             }
             catch (Exception ex)
             {
 
-                return Content(JsonConvert.SerializeObject(ex));
+                return Json(new { error = ex.Message });
             }
         }
 
@@ -53,7 +53,7 @@ namespace CollegeManager.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new { error_message = "Error: " + ex.Message });
+                return Json(new { error = ex.Message });
             }
 
         }
@@ -61,13 +61,13 @@ namespace CollegeManager.Controllers
         // POST: Student/Edit/Id
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public JsonResult Edit(Student student)
+        public JsonResult Edit([FromBody]Student student)
         {
 
             try
             {
                 var confirm = _context.Students.AsNoTracking().Where(s => s.Id == student.Id).SingleOrDefault();
-                if (confirm == null) { return Json(new { success = false }); }
+                if (confirm == null) { return Json(new { error = "Something went wrong!" }); }
 
 
                 _context.Entry(student).State = EntityState.Modified;
@@ -78,7 +78,7 @@ namespace CollegeManager.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new { error_message = "Error: " + ex.Message });
+                return Json(new { error = ex.Message });
             }
 
         }
@@ -91,7 +91,7 @@ namespace CollegeManager.Controllers
             try
             {
                 var student = _context.Students.Find(id);
-                if (student == null) { return Json(new { success = false }); }
+                if (student == null) { return Json(new { error = "Something went wrong." }); }
 
                 _context.Students.Remove(student);
                 _context.SaveChanges();
@@ -101,7 +101,7 @@ namespace CollegeManager.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new { error_message = "Error: " + ex.Message });
+                return Json(new { error = ex.Message });
             }
 
         }

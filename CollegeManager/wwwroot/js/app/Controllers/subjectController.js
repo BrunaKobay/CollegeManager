@@ -4,7 +4,9 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
 
     $scope.objData = [];
     $scope.msgError = "";
+    $scope.msgSuccess = "";
     $scope.objModel = {};
+    $scope.SubjectName = "";
 
     $scope.teachersList = [];
     $scope.coursesList = [];
@@ -17,8 +19,8 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
 
     $scope.GetCourseList = function () {
         baseService.GetByModel('course').then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.coursesList = results.data;
             }
@@ -30,8 +32,8 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
 
     $scope.GetTeacherList = function () {
         baseService.GetByModel('teacher').then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.teachersList = results.data;
             }
@@ -40,12 +42,12 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
         });
     };
 
-    $scope.GetEnrollmentsList = function () {
-        baseService.GetByModel('enrollment').then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+    $scope.GetStudentsList = function () {
+        baseService.GetByModel('student').then(function (results) {
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
-                $scope.enrollmentsList = results.data;
+                $scope.studentsList = results.data;
             }
         }, function (error) {
             $scope.msgError = error;
@@ -54,8 +56,8 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
 
     $scope.GetList = function () {
         baseService.GetList().then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.objData = results.data;
             }
@@ -71,14 +73,16 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
             CourseId: "",
             Course: "",
             TeacherId: "",
-            Teacher: ""
+            Teacher: "",
+            StudentId: "",
+            SubjectId: "",
         };
     };
 
     $scope.GetList();
     $scope.GetCourseList();
     $scope.GetTeacherList();
-    $scope.GetEnrollmentsList();
+    $scope.GetStudentsList();
     setDefaultModel();
 
     $scope.Cancel = function () {
@@ -95,8 +99,8 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
         };
 
         baseService.Save(objForm).then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.GetList();
                 setDefaultModel();
@@ -127,11 +131,12 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
         };
 
         baseService.Edit(objForm).then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.GetList();
                 setDefaultModel();
+                $scope.msgSuccess = "Edit complete!"
             }
         }, function (error) {
             $scope.msgError = error;
@@ -147,8 +152,8 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
 
     $scope.delete = function () {
         baseService.Delete($scope.objModel.Id).then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
                 $scope.GetList();
                 $scope.setDefaultModel();
@@ -158,18 +163,122 @@ app.controller('subjectController', function ($scope, baseService, enrollmentSer
         });
     };
 
+    //STUDENTS GRADES AREA
     $scope.showStudents = function (model) {
+        $scope.selectedSubject = true;
+        $scope.SubjectName = model.Name;
+        $scope.SubjectId = model.Id;
         enrollmentService.getEnrollmentBySubjectId(model.Id).then(function (results) {
-            if (results.data.error_message) {
-                $scope.msgError = results.data.error_message;
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
             } else {
-                $scope.studentsList = results.data;
+                $scope.enrollmentsList = results.data;
             }
         }, function (error) {
             $scope.msgError = error;
         });
     };
 
-   
+    $scope.Close = function () {
+        $scope.selectedSubject = false;
+        setDefaultModel();
+    };
+
+    $scope.editGradeId = function (model) {
+        $scope.objModel = {
+            EnrollmentId : model.EnrollmentId,
+            StudentId: model.StudentId,
+            StudentName: model.Student.Name,
+            SubjectId: model.SubjectId,
+            Grade: model.Grade,   
+        };
+    };
+
+    $scope.editGrade = function () {
+        var objForm = {
+            EnrollmentId: $scope.objModel.EnrollmentId,
+            StudentId: $scope.objModel.StudentId,
+            StudentName: $scope.objModel.StudentName,
+            SubjectId: $scope.objModel.SubjectId,
+            Grade: $scope.objModel.Grade,
+        };
+
+        var obj = {
+            Id: $scope.objModel.SubjectId,
+            Name: $scope.SubjectName
+        };
+
+
+        baseService.SetAlias('enrollment');
+
+        baseService.Edit(objForm).then(function (results) {
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
+            } else {
+                setDefaultModel();
+                $scope.showStudents(obj);
+                baseService.SetAlias('subject');
+                $scope.msgSuccess = "Edit complete!"
+            }
+        }, function (error) {
+            $scope.msgError = error;
+        });
+    };
+
+    $scope.addStudent = function () {
+        var objForm = {
+            StudentId: $scope.objModel.StudentId,
+            SubjectId: $scope.SubjectId,
+        };
+
+        var obj = {
+            Id: $scope.SubjectId,
+            Name: $scope.SubjectName
+        };
+
+        baseService.SetAlias('enrollment');
+        baseService.Save(objForm).then(function (results) {
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
+            } else {
+                baseService.SetAlias('subject');
+                $scope.showStudents(obj);
+                setDefaultModel();
+            }
+        }, function (error) {
+            $scope.msgError = error;
+        });
+
+    };
+
+    $scope.deleteEnrollmentId = function (model) {
+        $scope.objModel = {
+            EnrollmentId: model.EnrollmentId,
+            SubjectId: model.SubjectId,
+            StudentName: model.Student.Name
+        };
+    };
+
+    $scope.deleteEnrollment = function () {
+
+        var obj = {
+            Id: $scope.objModel.SubjectId,
+            Name: $scope.SubjectName
+        };
+
+
+        baseService.SetAlias('enrollment');
+        baseService.Delete($scope.objModel.EnrollmentId).then(function (results) {
+            if (results.data.error) {
+                $scope.msgError = results.data.error;
+            } else {
+                $scope.showStudents(obj);
+                baseService.SetAlias('subject');
+                $scope.setDefaultModel();
+            }
+        }, function (error) {
+            $scope.msgError = error;
+        });
+    };
 
 });

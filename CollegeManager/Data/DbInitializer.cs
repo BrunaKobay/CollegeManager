@@ -5,7 +5,7 @@ using System.Data.Entity;
 
 namespace CollegeManager.Data
 {
-    public class DbInitializer : DropCreateDatabaseAlways<DataContext>
+    public class DbInitializer : DropCreateDatabaseIfModelChanges<DataContext>
     {
         protected override void Seed(DataContext context)
         {

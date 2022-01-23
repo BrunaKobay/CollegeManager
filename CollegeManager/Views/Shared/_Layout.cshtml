@@ -11,7 +11,7 @@
 </head>
 
 <body class="text-center" ng-app="app">
-    <nav class="navbar navbar-expand-md navbar-light bg-light shadow">
+    <nav class="navbar fixed-top navbar-expand-md navbar-light bg-light shadow">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">MagniCollege</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,23 +19,22 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav m-auto">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/courses">Courses</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/teachers">Teachers</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/subjects">Subjects</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/students">Students</a></li>
+                    <li class="nav-item me-5"><a class="nav-link active" href="/courses">Courses</a></li>
+                    <li class="nav-item me-5"><a class="nav-link active" href="/teachers">Teachers</a></li>
+                    <li class="nav-item me-5"><a class="nav-link active" href="/subjects">Subjects</a></li>
+                    <li class="nav-item me-5"><a class="nav-link active" href="/students">Students</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <main class="">
-        <div class="container">
+
+        <div class="content">
 
             @RenderBody()
 
         </div>
-    </main>
+
 
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container">
@@ -54,6 +53,7 @@
     <script src="/js/app/Services/baseService.js"></script>
     <script src="/js/app/Services/enrollmentService.js"></script>
 
+    <script src="/js/app/Controllers/courseController.js"></script>
     <script src="/js/app/Controllers/subjectController.js"></script>
     <script src="/js/app/Controllers/studentController.js"></script>
     <script src="/js/app/Controllers/teacherController.js"></script>

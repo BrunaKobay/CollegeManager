@@ -29,6 +29,24 @@ namespace CollegeManager.Controllers
             return View();
         }
 
+        [Route("subjects")]
+        public IActionResult Subject()
+        {
+            return View();
+        }
+
+        [Route("teachers")]
+        public IActionResult Teacher()
+        {
+            return View();
+        }
+
+        [Route("courses")]
+        public IActionResult Course()
+        {
+            return View();
+        }
+
 
     }
 }

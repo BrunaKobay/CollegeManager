@@ -20,29 +20,47 @@ namespace CollegeManager.Controllers
         }
 
         // GET: Teacher
-        public ContentResult Get()
+        public JsonResult Get()
         {
             try
             {
-                var teachers = _context.Teachers.ToList();
-                return Content(JsonConvert.SerializeObject(teachers, new JsonSerializerSettings()
+                var teachers = _context.Teachers.Include(s => s.Subjects).ToList();
+                return Json(teachers, new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                }));
+                });
 
             }
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Content(JsonConvert.SerializeObject(JsonConvert.SerializeObject(new { error_message = "Error: " + ex.Message })));
+                return Json(new { error = ex.Message });
             }
         }
 
+        // GET: Teacher/details
+        public JsonResult GetbyId(int id)
+        {
+            try
+            {
+                var teacher = _context.Teachers.Include(s => s.Subjects).Where(t => t.Id == id);
+                return Json(teacher, new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { error = ex.Message });
+            }
+        }
 
         // POST: Teacher/Create
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public JsonResult Create(Teacher teacher)
+        public JsonResult Create([FromBody]Teacher teacher)
         {
             try
             {
@@ -53,7 +71,7 @@ namespace CollegeManager.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new { error_message = "Error: " + ex.Message });
+                return Json(new { error = ex.Message });
             }
 
         }
@@ -63,13 +81,13 @@ namespace CollegeManager.Controllers
         // POST: Teacher/Edit/5
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public JsonResult Edit(Teacher teacher)
+        public JsonResult Edit([FromBody]Teacher teacher)
         {
 
             try
             {
                 var confirm = _context.Teachers.AsNoTracking().Where(s => s.Id == teacher.Id).SingleOrDefault();
-                if (confirm == null) { return Json(new { success = false }); }
+                if (confirm == null) { return Json(new { error = "Something went wrong!" }); }
 
                 _context.Entry(teacher).State = EntityState.Modified;
                 _context.SaveChanges();
@@ -79,7 +97,7 @@ namespace CollegeManager.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new { error_message = "Error: " + ex.Message });
+                return Json(new { error = ex.Message });
             }
 
         }
@@ -91,7 +109,7 @@ namespace CollegeManager.Controllers
             try
             {
                 var teacher = _context.Teachers.Find(id);
-                if (teacher == null) { return Json(new { success = false }); }
+                if (teacher == null) { return Json(new { error = "Something went wrong!" }); }
 
                 _context.Teachers.Remove(teacher);
                 _context.SaveChanges();
@@ -101,7 +119,7 @@ namespace CollegeManager.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new { error_message = "Error: " + ex.Message });
+                return Json(new { error = ex.Message });
             }
 
         }

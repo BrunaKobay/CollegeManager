@@ -20,22 +20,22 @@ namespace CollegeManager.Controllers
         }
 
         // GET: Subjects
-        public ContentResult Get()
+        public JsonResult Get()
         {
             try
             {
-                var subjects = _context.Subjects.ToList();
+                var subjects = _context.Subjects.Include(c => c.Course).Include(t => t.Teacher).ToList();
 
-                return Content(JsonConvert.SerializeObject(subjects, new JsonSerializerSettings()
+                return Json(subjects, new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                }));
+                });
 
             }
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Content(JsonConvert.SerializeObject(ex));
+                return Json(new { error = ex.Message });
             }
         }
 
@@ -43,7 +43,7 @@ namespace CollegeManager.Controllers
         // GET: Subjects/Create
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public JsonResult Create(Subject subjects)
+        public JsonResult Create([FromBody]Subject subjects)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace CollegeManager.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new { error_message = "Error: " + ex.Message });
+                return Json(new { error = ex.Message });
             }
 
         }
@@ -64,13 +64,13 @@ namespace CollegeManager.Controllers
         // POST: Subject/Edit/Id
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public JsonResult Edit(Subject subject)
+        public JsonResult Edit([FromBody]Subject subject)
         {
 
             try
             {
                 var confirm = _context.Subjects.AsNoTracking().Where(s => s.Id == subject.Id).SingleOrDefault();
-                if (confirm == null) { return Json(new { success = false }); }
+                if (confirm == null) { return Json(new { error = "Invalid Id" }); }
 
                 _context.Entry(subject).State = EntityState.Modified;
                 _context.SaveChanges();
@@ -80,7 +80,7 @@ namespace CollegeManager.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new { error_message = "Error: " + ex.Message });
+                return Json(new { error = ex.Message });
             }
 
         }
@@ -93,7 +93,7 @@ namespace CollegeManager.Controllers
             try
             {
                 var subject = _context.Subjects.Find(id);
-                if (subject == null) { return Json(new { success = false }); }
+                if (subject == null) { return Json(new { error = "Invalid Id" }); }
 
                 _context.Subjects.Remove(subject);
                 _context.SaveChanges();
@@ -103,7 +103,7 @@ namespace CollegeManager.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new { error_message = "Error: " + ex.Message });
+                return Json(new { error = ex.Message });
             }
 
         }

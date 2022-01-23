@@ -6,14 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\app\Controllers\courseController.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\js\app\app.js" />
     <None Include="wwwroot\js\app\Controllers\studentController.js" />
+    <None Include="wwwroot\js\app\Controllers\courseController.js" />
     <None Include="wwwroot\js\app\Controllers\subjectController.js" />
     <None Include="wwwroot\js\app\Controllers\teacherController.js" />
     <None Include="wwwroot\js\app\Services\baseService.js" />
     <None Include="wwwroot\js\app\Services\enrollmentService.js" />
-    <None Include="wwwroot\js\app\Services\studentService.js" />
-    <None Include="wwwroot\js\app\Services\subjectService.js" />
   </ItemGroup>
 
   <ItemGroup>
