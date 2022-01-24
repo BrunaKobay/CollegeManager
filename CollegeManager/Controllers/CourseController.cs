@@ -78,13 +78,29 @@ namespace CollegeManager.Controllers
                 courseDetail.CourseName = course.Name;
                 courseDetail.TeachersCount = allCollegeDetails.Where(a => a.CourseId == course.Id).Select(s => s.TeacherId).Distinct().Count();
                 courseDetail.StudentsCount = allCollegeDetails.Where(a => a.CourseId == course.Id).Select(s => s.StudentId).Distinct().Count();
-                courseDetail.GradeAvg = (int)allCollegeDetails.Where(a => a.CourseId == course.Id).Select(s => s.StudentGrade).DefaultIfEmpty(defaultValue: 0).Average();
+                courseDetail.GradeAvg = allCollegeDetails.Where(a => a.CourseId == course.Id).Select(s => s.StudentGrade).DefaultIfEmpty(defaultValue: 0).Average();
 
                 courseDetailsList.Add(courseDetail);
             }
 
 
             return Json(courseDetailsList);
+        }
+
+        // GET: Courses/Details
+        public JsonResult GetSumDetails()
+        {
+
+
+            var totalCount = new Dictionary<string, double>()    {
+                { "totalCourse", _context.Coursers.Distinct().Count() },
+                { "totalSubjects", _context.Subjects.Distinct().Count() },
+                { "totalStudents", _context.Students.Distinct().Count() },
+                { "totalTeachers", _context.Teachers.Distinct().Count() }
+            };
+
+
+            return Json(totalCount);
         }
 
 

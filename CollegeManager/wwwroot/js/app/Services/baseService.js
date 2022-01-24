@@ -1,4 +1,6 @@
 ﻿'use strict';
+
+//change to factory
 angular.module('app').service('baseService', ['$http', function ($http) {
 
     var objServiceFactory = {};
@@ -58,6 +60,15 @@ angular.module('app').service('baseService', ['$http', function ($http) {
             });
     };
 
+    var _getCoursesDetail = function () {
+        return $http.get('/course/GetDetails')
+            .then(function (results) {
+                return results;
+            }, function (err) {
+                return err;
+            });
+    };
+
     objServiceFactory.GetList = _getList;
     objServiceFactory.Save = _save;
     objServiceFactory.Delete = _delete;
@@ -65,6 +76,7 @@ angular.module('app').service('baseService', ['$http', function ($http) {
     objServiceFactory.GetById = _getById;
     objServiceFactory.Edit = _edit;
     objServiceFactory.GetByModel = _getListByModel;
+    objServiceFactory.GetCourseDetails = _getCoursesDetail;
 
     return objServiceFactory;
 

@@ -9,6 +9,10 @@
     {
       "library": "angular.js@1.8.2",
       "destination": "wwwroot/lib/angular.js/"
+    },
+    {
+      "library": "angular-route@1.8.2",
+      "destination": "wwwroot/lib/angular.js/angular-route/"
     }
   ]
 }

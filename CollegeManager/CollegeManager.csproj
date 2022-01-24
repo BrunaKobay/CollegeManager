@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\js\app\Controllers\courseController.js" />
+    
   </ItemGroup>
 
   <ItemGroup>

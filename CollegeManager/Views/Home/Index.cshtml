@@ -1,49 +1,271 @@
-﻿<div class="container home">
-    <h2>Dashboard</h2>
+﻿<div class="container" ng-controller="subjectController">
+    <div class="alert alert-danger" ng-show="msgError.length > 0">
+        {{msgError}}
+    </div>
+
+    @*<div class="alert alert-success" id="alert" ng-show="msgSuccess.length > 0">
+            {{msgSuccess}}
+            <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>*@
+
+    <h2 class="">
+        Subjects
+        <button type="button" class="btn btn-warning float-end" aria-label="Add subject" data-bs-toggle="modal" data-bs-target="#Add">
+            <i class="fas fa-plus"></i>
+        </button>
+    </h2>
+
+    <div class="row">
+        <div class="mt-4 table-responsive" ng-class="{'col-sm-8': selectedSubject, 'col-sm-12': !selectedSubject}">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Teacher</th>
+                        <th>Course</th>
+                        <th class="actionColumn"></th>
+                        <th class="actionColumn"></th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="o in objData | orderBy:'Course'">
+                    <td>{{o.Name}}</td>
+                    <td>{{o.Teacher.Name}}</td>
+                    <td>{{o.Course.Name }}</td>
+                    <td>
+                        @*<button data-bs-toggle="modal" data-bs-target="#Students" class="btn btn-outline-primary btn-xs" ng-click="showStudents(o)">Show Students</button>*@
+                        <button class="btn btn-outline-primary btn-xs" ng-click="showStudents(o)">Show Students</button>
+                    </td>
+                    <td>
+                        <button data-bs-toggle="modal" data-bs-target="#Edit" class="btn btn-outline-success" ng-click="editId(o)"> <span><i class="fas fa-edit"></i></span></button>
+                        <button data-bs-toggle="modal" data-bs-target="#Delete" class="btn btn-outline-danger" ng-click="deleteId(o)"><span><i class="far fa-trash-alt"></i></span></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-sm-4" ng-if="selectedSubject">
+            <div class="mt-4">
+
+                <table class="table table-bordered table-striped table-hover mt-4">
+                    <thead>
+                        <tr class="text-center"><th colspan="3">{{SubjectName}}</th></tr>
+                        <tr>
+                            <th>Student</th>
+                            <th>Grade</th>
+                            <th class="actionColumn"></th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="s in enrollmentsList | orderBy:'Name'">
+                        <td>{{s.Student.Name}}</td>
+                        <td>{{s.Grade}}</td>
+                        <td>
+                            <button data-bs-toggle="modal" data-bs-target="#EditGrade" class="btn btn-outline-success" ng-click="editGradeId(s)"> <span><i class="fas fa-edit"></i></span></button>
+                            <button data-bs-toggle="modal" data-bs-target="#DeleteEnrollment" class="btn btn-outline-danger" ng-click="deleteEnrollmentId(s)"><span><i class="far fa-trash-alt"></i></span></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="">
+                <button data-bs-toggle="modal" data-bs-target="#AddEnrollment" class="btn btn-outline-primary"> <span><i class="fas fa-plus-circle"></i>  Add Student</span></button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Close()">Close</button>
+            </div>
+
+        </div>
+    </div>
 
 
-    <div class="card card-panel border-0">
-        <div class="row card-info">
-            <div class="col-xs-6 col-md-3 col-lg-3">
-                <div class="card border-0 border-end m-4">
-                    <div class="row">
-                        <span><i class="fas fa-university"></i></span>
-                        <div class="">120</div>
-                        <div class="text-muted">Courses</div>
+
+
+
+    <!-- modal for adding new subject -->
+    <div class="modal" id="Add" role="dialog" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-light text-center">
+                    <h3 class="modal-title w-100">Add Subject</h3>
+                </div>
+                <div class="modal-body text-start">
+                    <form name="newForm" novalidate>
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input class="form-control" type="text" name="Name" id="name" ng-model="objModel.Name" placeholder="subject name" required />
+                            <span ng-show="newForm.Name.$invalid && newForm.Name.$touched" style="color:red">Name is required.</span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="teacher" class="form-label">Teacher</label>
+                            <select class="form-select" id="Teacher" ng-model="objModel.TeacherId" required>
+                                <option ng-repeat="t in teachersList" value="{{t.Id}}">{{t.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="course" class="form-label">Course</label>
+                            <select class="form-select" id="Course" ng-model="objModel.CourseId" required>
+                                <option ng-repeat="c in coursesList" value="{{c.Id}}">{{c.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="newForm.$invalid" ng-click="Save()">Add</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal for editing subject -->
+    <div class="modal" id="Edit" role="dialog" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-light text-center">
+                    <h3 class="modal-title w-100">Edit Subject</h3>
+                </div>
+                <div class="modal-body text-start">
+                    <form name="editForm" novalidate>
+                        <input type="hidden" data-ng-model="Id" />
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input class="form-control" type="text" name="Name" id="name" ng-model="objModel.Name" placeholder="subject name" required />
+                            <span ng-show="editForm.Name.$invalid && newForm.Name.$touched" style="color:red" class="help-block">Name is required.</span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="course" class="form-label">Course</label>
+                            <select class="form-select" id="Course" ng-model="objModel.CourseId" required>
+                                <option ng-repeat="c in coursesList" ng-selected="objModel.CourseId == c.Id" value="{{c.Id}}">{{c.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="teacher" class="form-label">Teacher</label>
+                            <select class="form-select" id="TeacherId" ng-model="objModel.TeacherId">
+                                <option ng-repeat="t in teachersList" ng-selected="objModel.TeacherId == t.Id" value="{{t.Id}}">{{t.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="editForm.$invalid" ng-click="edit()">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal for deleting subject -->
+    <div class="modal" role="dialog" id="Delete" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h3 class="modal-title w-100">Are you sure you want to delete "{{objModel.Name}}"?</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnAdd" data-bs-dismiss="modal" ng-click="delete(objModel.Id)">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal for students list and GRADES -->
+    @*<div class="modal" role="dialog" id="Students" data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="mt-4 table-responsive">
+                            <h3 class="text-center">{{SubjectName}}</h3>
+                            <table class="table table-striped table-hover mt-4">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Grade</th>
+                                        <th class="actionColumn"></th>
+                                    </tr>
+                                </thead>
+                                <tr ng-repeat="s in enrollmentsList | orderBy:'Name'">
+                                    <td>{{s.Student.Name}}</td>
+                                    <td>{{s.Grade}}</td>
+                                    <td>
+                                        <button data-bs-toggle="modal" data-bs-target="#EditGrade" class="btn btn-outline-success" ng-click="editGradeId(s)"> <span><i class="fas fa-edit"></i></span></button>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0">
+                        <button data-bs-toggle="modal" data-bs-target="#AddEnrollment" class="btn btn-outline-primary"> <span><i class="fas fa-plus-circle"></i>New Student</span></button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
                     </div>
                 </div>
             </div>
+        </div>*@
 
-            <div class="col-xs-6 col-md-3 col-lg-3">
-                <div class="card border-0 border-end m-4">
-                    <div class="row">
-                        <span><i class="fas fa-book"></i></span>
-                        <div class="">120</div>
-                        <div class="text-muted">Subjects</div>
-                    </div>
+    <!-- modal for editing subject GRADE -->
+    <div class="modal" id="EditGrade" role="dialog" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-light text-center">
+                    <h3 class="modal-title w-100">Edit Student Grade</h3>
+                </div>
+                <div class="modal-body text-start">
+                    <form name="editGradeForm" novalidate>
+                        <input type="hidden" data-ng-model="EnrollmentId" />
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Student Name</label>
+                            <input class="form-control" type="text" name="Name" id="name" ng-model="objModel.StudentName" disabled />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="grade" class="form-label">Grade</label>
+                            <input class="form-control" type="text" name="Grade" id="grade" ng-model="objModel.Grade" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="editGradeForm.$invalid" ng-click="editGrade()">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
 
-
-
-            <div class="col-xs-6 col-md-3 col-lg-3">
-                <div class="card border-0 border-end m-4">
-                    <div class="row">
-                        <span><i class="fas fa-user-tie"></i></span>
-                        <div class="">120</div>
-                        <div class="text-muted">Teachers</div>
-                    </div>
+    <!-- modal for adding new ENROLLMENT -->
+    <div class="modal" id="AddEnrollment" role="dialog" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-light text-center">
+                    <h3 class="modal-title w-100">Add new Enrollment</h3>
+                </div>
+                <div class="modal-body text-start">
+                    <form name="newGradeForm" novalidate>
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Subject</label>
+                            <input class="form-control" type="text" name="Name" id="name" value={{SubjectName}} disabled />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="subject" class="form-label">Student</label>
+                            <select class="form-select" id="Teacher" ng-model="objModel.StudentId" required>
+                                <option ng-repeat="s in studentsList" value="{{s.Id}}">{{s.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="newGradeForm.$invalid" ng-click="addStudent()">Add</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
 
-
-            <div class="col-xs-6 col-md-3 col-lg-3">
-                <div class="card border-0 m-4">
-                    <div class="row">
-                        <span><i class="fas fa-graduation-cap"></i></span>
-                        <div class="">120</div>
-                        <div class="text-muted">Students</div>
-                    </div>
+    <!-- modal for deleting ENROLLMENT -->
+    <div class="modal" role="dialog" id="DeleteEnrollment" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="modal-title w-100">Are you sure you want to exclude student "{{objModel.StudentName}}" from "{{SubjectName}}"?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnAdd" data-bs-dismiss="modal" ng-click="deleteEnrollment(objModel.EnrollmentId)">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
                 </div>
             </div>
         </div>

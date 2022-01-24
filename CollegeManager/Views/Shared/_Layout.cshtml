@@ -1,27 +1,30 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Magni College</title>
+    <title>Magni College Management System</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/css/all.min.css" />
     <link href="~/css/fontawesome.min.css" />
+    <script src="~/lib/angular.js/angular.js"></script>
+    <script src="~/lib/angular.js/angular-route/angular-route.js"></script>
+    <script src="/js/app/app.js"></script>
 </head>
 
-<body class="text-center" ng-app="app">
+<body class="text-center">
     <nav class="navbar fixed-top navbar-expand-md navbar-light bg-light shadow">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">MagniCollege</a>
+            <a class="navbar-brand" href="/"> <span><i class="fas fa-graduation-cap"></i></span> MagniCollege</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav m-auto">
                     <li class="nav-item me-5"><a class="nav-link active" href="/courses">Courses</a></li>
+                    <li class="nav-item me-5"><a class="nav-link active" href="/">Subjects</a></li>
                     <li class="nav-item me-5"><a class="nav-link active" href="/teachers">Teachers</a></li>
-                    <li class="nav-item me-5"><a class="nav-link active" href="/subjects">Subjects</a></li>
                     <li class="nav-item me-5"><a class="nav-link active" href="/students">Students</a></li>
                 </ul>
             </div>
@@ -29,11 +32,12 @@
     </nav>
 
 
-        <div class="content">
+    <div class="content">
 
-            @RenderBody()
+        @RenderBody()
 
-        </div>
+
+    </div>
 
 
     <footer class="footer mt-auto py-3 bg-light">
@@ -46,10 +50,7 @@
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/all.min.js"></script>
     <script src="~/js/fontawesome.min.js"></script>
-    <script src="~/lib/angular.js/angular.js"></script>
-
-
-    <script src="/js/app/app.js"></script>
+   
     <script src="/js/app/Services/baseService.js"></script>
     <script src="/js/app/Services/enrollmentService.js"></script>
 

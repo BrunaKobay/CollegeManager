@@ -11,7 +11,7 @@ namespace CollegeManager.Models
         public string CourseName { get; set; }
         public int TeachersCount { get; set; }
         public int StudentsCount { get; set; }
-        public int GradeAvg { get; set; }
+        public double? GradeAvg { get; set; }
 
 
     }

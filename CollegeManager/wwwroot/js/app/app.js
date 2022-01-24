@@ -1,4 +1,8 @@
-﻿var app = angular.module('app', []);
+﻿var app = angular.module('app', ['ngRoute']);
 
 
-//learn ng-route
+//app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+//    $routeProvider.when('/coursesd', { templateUrl: '/templates/course.html', controller: "courseController" });
+
+//}]);
+//learn ng-route, not working?

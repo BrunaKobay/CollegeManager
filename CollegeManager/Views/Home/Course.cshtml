@@ -10,29 +10,22 @@
         {{msgError}}
     </div>
 
-    {{objData}}
     <div class="mt-4 table-responsive">
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Subjects</th>
                     <th>Number of Teachers</th>
                     <th>Number of Students</th>
+                    <th>Average Grade</th>
                     <th class="actionColumn"></th>
                 </tr>
             </thead>
             <tr ng-repeat="o in objData | orderBy:'Name'">
-                <td>{{o.Name}}</td>
-                <td>
-                    <ul ng-repeat="s in o.Subjects">
-                        {{s.Name}}
-                    </ul>
-                </td>
-                <td>{{o.Course.Name }}</td>
-                <td>
-                    <button data-bs-toggle="modal" data-bs-target="#Students" class="btn btn-primary btn-xs" ng-click="showStudents(o)">Show Students</button>
-                </td>
+                <td>{{o.courseName}}</td>
+                <td>{{o.teachersCount }}</td>
+                <td> {{o.studentsCount }}</td>
+                <td>{{o.gradeAvg}}</td>
                 <td>
                     <button data-bs-toggle="modal" data-bs-target="#Edit" class="btn btn-outline-success" ng-click="editId(o)"> <span><i class="fas fa-edit"></i></span></button>
                     <button data-bs-toggle="modal" data-bs-target="#Delete" class="btn btn-outline-danger" ng-click="deleteId(o)"><span><i class="far fa-trash-alt"></i></span></button>
@@ -43,37 +36,21 @@
     </div>
 
 
-    <!-- modal for adding new subject -->
+    <!-- modal for adding new course -->
     <div class="modal" id="Add" role="dialog" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-dark text-light text-center">
-                    <h3 class="modal-title w-100">Add Subject</h3>
+                    <h3 class="modal-title w-100">Add Course</h3>
                 </div>
                 <div class="modal-body text-start">
                     <form name="newForm" novalidate>
-                        <input type="hidden" data-ng-model="Id" />
+                        <input type="hidden" ng-model="objModel.CourseId" />
                         <div class="form-group mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input class="form-control" type="text" name="Name" id="name" ng-model="objModel.Name" placeholder="subject name" required />
+                            <input class="form-control" type="text" name="Name" id="name" ng-model="objModel.CourseName" placeholder="course name" required />
                             <span ng-show="newForm.Name.$invalid && newForm.Name.$touched" style="color:red" class="help-block">Name is required.</span>
                         </div>
-                        <div class="form-group mb-3">
-                            <label for="teacher" class="form-label">Teacher</label>
-                            <select class="form-select" id="Teacher" ng-model="objModel.TeacherId" required>
-                                <option ng-repeat="t in teachersList" value="{{t.Id}}">{{t.Name}}</option>
-                            </select>
-                            <span ng-show="newForm.Teacher.$invalid && newForm.Teacher.$touched" style="color:red" class="help-block">Teacher is required.</span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="course" class="form-label">Course</label>
-                            @*<select class="form-select" id="Course" ng-model="objModel.CourseId" required>
-                                    <option ng-repeat="c in coursesList" value="{{c.Id}}">{{c.Name}}</option>
-                                </select>*@
-                            <input class="form-control" type="text" id="Course" ng-model="objModel.CourseId" placeholder="course id" />
-                            <p ng-show="newForm.Course.$invalid && newForm.Course.$touched" style="color:red" class="help-block">Course is required.</p>
-                        </div>
-
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="newForm.$invalid" ng-click="Save()">Add</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
@@ -84,31 +61,20 @@
         </div>
     </div>
 
-    <!-- modal for editing subject -->
+    <!-- modal for editing course -->
     <div class="modal" id="Edit" role="dialog" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-dark text-light text-center">
-                    <h3 class="modal-title w-100">Edit Subject</h3>
+                    <h3 class="modal-title w-100">Edit Course</h3>
                 </div>
                 <div class="modal-body text-start">
                     <form name="editForm" novalidate>
-                        <input type="hidden" data-ng-model="Id" />
+                        <input type="hidden" ng-model="objModel.Id" />
                         <div class="form-group mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input class="form-control" type="text" name="Name" id="name" ng-model="objModel.Name" placeholder="subject name" required />
+                            <input class="form-control" type="text" name="Name" id="name" ng-model="objModel.Name" placeholder="course name" required />
                             <span ng-show="editForm.Name.$invalid && newForm.Name.$touched" style="color:red" class="help-block">Name is required.</span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="course" class="form-label">Course</label>
-                            <input class="form-control" type="text" id="course" ng-model="objModel.CourseId" placeholder="course name" />
-                            <p ng-show="editForm.RegistrationId.$invalid && newForm.RegistrationId.$touched" style="color:red" class="help-block">Course is required.</p>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="teacher" class="form-label">Teacher</label>
-                            <select class="form-select" id="TeacherId" ng-model="objModel.TeacherId">
-                                <option ng-repeat="t in teachersList" value="{{t.Id}}">{{t.Name}}</option>
-                            </select>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="editForm.$invalid" ng-click="edit()">Save</button>
@@ -135,24 +101,4 @@
         </div>
     </div>
 
-    <!-- modal for students list -->
-    <div class="modal" role="dialog" id="Students" data-bs-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <ul ng-repeat="e in studentsList">
-                        <li> Grade: {{e.Grade}}</li>
-                        <li> StudentId: {{e.Student.Id}}</li>
-                        <li> Student Name: {{e.Student.Name}}</li>
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" id="btnAdd" data-bs-dismiss="modal" ng-click="delete(objModel.Id)">Delete</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    
 </div>

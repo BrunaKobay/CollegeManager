@@ -207,7 +207,7 @@
                     <h3 class="modal-title w-100">Edit Student Grade</h3>
                 </div>
                 <div class="modal-body text-start">
-                    <form name="editForm" novalidate>
+                    <form name="editGradeForm" novalidate>
                         <input type="hidden" data-ng-model="EnrollmentId" />
                         <div class="form-group mb-3">
                             <label for="name" class="form-label">Student Name</label>
@@ -218,7 +218,7 @@
                             <input class="form-control" type="text" name="Grade" id="grade" ng-model="objModel.Grade" />
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="editForm.$invalid" ng-click="editGrade()">Save</button>
+                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="editGradeForm.$invalid" ng-click="editGrade()">Save</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
                         </div>
                     </form>
@@ -235,7 +235,7 @@
                     <h3 class="modal-title w-100">Add new Enrollment</h3>
                 </div>
                 <div class="modal-body text-start">
-                    <form name="newForm" novalidate>
+                    <form name="newGradeForm" novalidate>
                         <div class="form-group mb-3">
                             <label for="name" class="form-label">Subject</label>
                             <input class="form-control" type="text" name="Name" id="name" value={{SubjectName}} disabled />
@@ -247,7 +247,7 @@
                             </select>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="newForm.$invalid" ng-click="addStudent()">Add</button>
+                            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" ng-disabled="newGradeForm.$invalid" ng-click="addStudent()">Add</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="Cancel()">Close</button>
                         </div>
                     </form>
